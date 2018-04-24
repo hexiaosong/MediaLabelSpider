@@ -57,6 +57,12 @@ class MediaLabelData(Document):
     link_num = IntField(required=False, default=0,verbose_name='反链数')
     baidu_pc_weight = IntField(required=False, default=0,verbose_name='百度pc权重')
     baidu_mobile_weight = IntField(required=False, default=0,verbose_name='百度mobile权重')
+    keywords_baidu = StringField(default='', verbose_name='百度关键词')
+    keywords_360 = StringField(default='', verbose_name='360关键词')
+    pv_str = StringField(default='', verbose_name='pv访问量')
+    ip_str = StringField(default='', verbose_name='ip访问量')
+    pv_list_str = StringField(default='', verbose_name='pv访问量(万)')
+    ip_list_str = StringField(default='', verbose_name='ip访问量(万)')
     desc = StringField(default='', verbose_name='网站简介')
     website_rank = StringField(default='', verbose_name='国内排名')
     province_rank = StringField(default='', verbose_name='省份排名')
@@ -104,3 +110,19 @@ class MediaLabelData(Document):
                 self.desc,
                 )
 
+class VistitedUrl(Document):
+    url = StringField(default='', verbose_name='已访问详情页链接')
+    add_time = DateTimeField(
+        db_field='createtime',
+        default=datetime.datetime.now,
+        verbose_name='创建时间',
+    )
+    meta = {
+        'db_alias': "MediaLabel",
+        'strict': False,
+        'index_background': True,
+        "collection": "VistitedUrl",
+        "indexes": [
+            "url",
+        ]
+    }

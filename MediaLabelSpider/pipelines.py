@@ -35,4 +35,6 @@ class MedialabelspiderPipeline(object):
             data = MediaLabelData(**item)
             data.save()
             print('Save sucessful: %s' % data)
+        else:
+            print('此媒体信息已经存在,跳过！！')
         return item

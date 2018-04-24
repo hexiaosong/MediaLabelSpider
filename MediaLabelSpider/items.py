@@ -21,6 +21,12 @@ class MedialabelspiderItem(scrapy.Item):
     link_num = scrapy.Field()           # 反链数
     baidu_pc_weight = scrapy.Field()    # 百度pc权重
     baidu_mobile_weight = scrapy.Field()# 百度mobile权重
+    keywords_baidu = scrapy.Field()     # 百度关键词
+    keywords_360 = scrapy.Field()       # 360关键词
+    pv_str = scrapy.Field()             # pv访问量
+    ip_str = scrapy.Field()             # ip访问量
+    pv_list_str = scrapy.Field()        # pv访问量数字串
+    ip_list_str = scrapy.Field()        # ip访问量数字串
     desc = scrapy.Field()               # 网站简介
     website_rank = scrapy.Field()       # 国内排名
     province_rank = scrapy.Field()      # 省份排名
