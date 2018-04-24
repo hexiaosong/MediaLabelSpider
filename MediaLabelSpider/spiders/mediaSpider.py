@@ -27,7 +27,7 @@ class MediaLabelSpider(CrawlSpider):
 
     name = 'media_label'
 
-    def __init__(self, url_dict=CATE_URL_DICT, cate_item_list=['休闲娱乐']):
+    def __init__(self, url_dict=CATE_URL_DICT, cate_item_list=[]):
         super(MediaLabelSpider, self).__init__()
         self.index_url = 'http://top.chinaz.com'
         self.base_url = 'http://top.chinaz.com/hangye/index_%s.html'
@@ -83,9 +83,15 @@ class MediaLabelSpider(CrawlSpider):
             url = pv_url
         res = requests.post(url, headers=headers, data=data)
         html = res.text
-        json_data = demjson.decode(html)
-        self.jprint(json_data)
-        time.sleep(random.uniform(0, 1))
+        try:
+            json_data = demjson.decode(html)
+        except Exception as e:
+            self.logger.error(e)
+            self.logger.error(html)
+            json_data = None
+
+        # self.jprint(json_data)
+        time.sleep(random.uniform(0, 1.5))
         return json_data
 
     def crawl_item(self, cate_list):
@@ -281,14 +287,14 @@ class MediaLabelSpider(CrawlSpider):
         website_domain = d['url'].replace('http://','')
         pv_data = self.crawl_chinaz_api(website_domain,is_pv=True)
         ip_data = self.crawl_chinaz_api(website_domain, is_ip=True)
+        if pv_data and ip_data:
+            d['pv_str'] = json.dumps(pv_data)
+            d['ip_str'] = json.dumps(ip_data)
 
-        d['pv_str'] = json.dumps(pv_data)
-        d['ip_str'] = json.dumps(ip_data)
-
-        pv_num_list = [str(int(item['data']['PvNum'])/float(10000)) for item in pv_data]
-        ip_num_list = [str(int(item['data']['IpNum'])/float(10000)) for item in ip_data]
-        d['pv_list_str'] = ','.join(list(reversed(pv_num_list)))
-        d['ip_list_str'] = ','.join(list(reversed(ip_num_list)))
+            pv_num_list = [str(int(item['data']['PvNum'])/float(10000)) for item in pv_data]
+            ip_num_list = [str(int(item['data']['IpNum'])/float(10000)) for item in ip_data]
+            d['pv_list_str'] = ','.join(list(reversed(pv_num_list)))
+            d['ip_list_str'] = ','.join(list(reversed(ip_num_list)))
 
         if '备案信息' in response.text:
             # 公司信息
